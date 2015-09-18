@@ -69,6 +69,7 @@ from optparse import OptionParser, OptionGroup, SUPPRESS_HELP
 import logging
 import platform
 import textwrap
+from multiprocessing.dummy import Pool as ThreadPool 
 
 from cutadapt import seqio, __version__
 from cutadapt.xopen import xopen
@@ -243,6 +244,7 @@ class AdapterCutter(object):
 		return trimmed_read
 
 
+
 def process_single_reads(reader, modifiers, filters):
 	"""
 	Loop over reads, find adapters, trim reads, apply modifiers and
@@ -250,16 +252,30 @@ def process_single_reads(reader, modifiers, filters):
 
 	Return a Statistics object.
 	"""
-	n = 0  # no. of processed reads
-	total_bp = 0
-	for read in reader:
-		n += 1
-		total_bp += len(read.sequence)
+	pool = ThreadPool()
+	def func(read):
 		for modifier in modifiers:
 			read = modifier(read)
+		return read
+		#for filter in filters:
+			#if filter(read):
+				#return
+
+	for read in pool.imap(func, reader):
 		for filter in filters:
 			if filter(read):
 				break
+	
+	n = 10  # no. of processed reads
+	total_bp = 100
+	#for read in reader:
+		#n += 1
+		#total_bp += len(read.sequence)
+		#for modifier in modifiers:
+			#read = modifier(read)
+		#for filter in filters:
+			#if filter(read):
+				#break
 
 	return Statistics(n=n, total_bp1=total_bp, total_bp2=None)
 
