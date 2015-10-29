@@ -3,8 +3,8 @@ from __future__ import print_function, division, absolute_import
 from nose.tools import raises, assert_raises
 
 from cutadapt.seqio import Sequence
-from cutadapt.adapters import (Adapter, Match, ColorspaceAdapter, FRONT,
-	BACK, parse_braces)
+from cutadapt.adapters import (Adapter, Match, ColorspaceAdapter, FRONT, BACK,
+	parse_braces, LinkedAdapter)
 
 def test_issue_52():
 	adapter = Adapter(
@@ -86,3 +86,11 @@ def test_parse_braces_fail():
 	for expression in ['{', '}', '{}', '{5', '{1}', 'A{-7}', 'A{', 'A{1', 'N{7', 'AN{7', 'A{4{}',
 			'A{4}{3}', 'A{b}', 'A{6X}', 'A{X6}']:
 		assert_raises(ValueError, lambda: parse_braces(expression))
+
+
+def test_linked_adapter():
+	la = LinkedAdapter('AAAA', 'TTTT')
+	seq = Sequence(name='seq', sequence='AAAACCCCCTTTT')
+	match = la.match_to(seq)
+	print(match)
+

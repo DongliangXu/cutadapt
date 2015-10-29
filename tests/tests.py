@@ -353,3 +353,8 @@ def test_max_n():
 	run('--max-n 2', 'maxn2.fasta', 'maxn.fasta')
 	run('--max-n 0.2', 'maxn0.2.fasta', 'maxn.fasta')
 	run('--max-n 0.4', 'maxn0.4.fasta', 'maxn.fasta')
+
+
+def test_linked():
+	run('-a AAAAAAAAAA...TTTTTTTTTT', 'linked.fasta', 'linked.fasta')
+
