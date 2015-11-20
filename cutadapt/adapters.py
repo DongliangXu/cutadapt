@@ -388,3 +388,47 @@ class ColorspaceAdapter(Adapter):
 
 	def __repr__(self):
 		return '<ColorspaceAdapter(sequence={0!r}, where={1})>'.format(self.sequence, self.where)
+
+
+class LinkedAdapter(object):
+	"""
+	"""
+	def __init__(self, front_sequence, back_sequence,
+			front_anchored=True, back_anchored=False,
+			max_error_rate=0.1, min_overlap=3,
+			read_wildcards=False, adapter_wildcards=True, name=None, indels=True):
+		"""
+		"""
+		where1 = PREFIX if front_anchored else FRONT
+		where2 = SUFFIX if back_anchored else BACK
+		self.front_anchored = front_anchored
+		self.back_anchored = back_anchored
+
+		def adapter_instance(sequence, where):
+			return Adapter(sequence, where=where, max_error_rate=max_error_rate,
+				min_overlap=min_overlap, read_wildcards=read_wildcards,
+				adapter_wildcards=adapter_wildcards, name=None, indels=indels)
+
+		self.adapter1 = adapter_instance(front_sequence, where=where1)
+		self.adapter2 = adapter_instance(back_sequence, where=where2)
+
+	def enable_debug(self):
+		self.adapter1.enable_debug()
+		self.adapter2.enable_debug()
+
+	#def match_to(self, read):
+		#"""
+		#Match the linked adapters against the given read.
+		#"""
+		#front_match = self.adapter1.match_to(read)
+
+		#if self.front_anchored and front_match is None:
+			#pass
+
+
+
+
+
+
+	#def trimmed(self, match):
+
